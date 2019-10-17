@@ -51,6 +51,8 @@ const Menu =({history})=>(
           aria-labelledby="navbarDropdownMenuLink-333">
           <Link to={`/user/${isAuth()&&isAuth().user._id}`} className='dropdown-item'>Profile</Link>
           <Link to={`/user/findPeople/${isAuth()&&isAuth().user._id}`} className='dropdown-item'>Find</Link>
+          <Link to={`/post/create/`} className='dropdown-item'>Create Post</Link>
+
           <a className='dropdown-item' onClick={()=>Signout(()=>history.push('/'))}>Sign Out</a>
         </div>
       </li>

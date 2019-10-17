@@ -8,7 +8,8 @@ import Profile from './user/Profile'
 import Edit from './user/Edit'
 import Users from './core/Users'
 import findPeople from './user/findPeople'
-
+import CreatePost from './post/newPost'
+import { create } from 'domain'
 const MainRouter = ()=>(
     <div>
         <Menu />
@@ -20,6 +21,7 @@ const MainRouter = ()=>(
             <Route exact path='/user/edit/:userId' component={Edit} />
             <Route exact path='/users' component={Users} />
             <Route exact path='/user/findPeople/:userId' component={findPeople} />
+            <Route exact path='/post/create' component={CreatePost} />
 
         </Switch>
     </div>
