@@ -6,6 +6,8 @@ import defProfile from '../../public/img/ricardo.png'
 import Signout from '../user/Signout'
 import FollowProfileButton from './FollowButton'
 import ProfileTabs from './ProfileTabs'
+import {getPostsBy} from '../post/getPosts'
+
 class Profile extends Component{
     constructor(){
         super();
@@ -14,6 +16,7 @@ class Profile extends Component{
                 followers:[],
                 following:[]
             },
+            posts:[],
             redirectToSignin:false,
             following:false,
             error:""
@@ -40,6 +43,15 @@ class Profile extends Component{
     componentDidMount(){
        const userId = this.props.match.params.userId
        this.init(userId);
+       getPostsBy(userId,isAuth().token)
+       .then(data=>{
+           if(data.error){
+               console.log(data.error);
+           }else{
+               this.setState({posts:data});
+               console.log(data)
+           }
+       })
     }
     componentWillReceiveProps(props){
         const userId = this.props.match.params.userId
@@ -115,7 +127,7 @@ class Profile extends Component{
                     </div>
                 ):(<FollowProfileButton  follow={this.state.following} followId={userId} comp={this} />)}
                 <hr/>
-                <ProfileTabs followers={this.state.user.followers} following={this.state.user.following}/>
+                <ProfileTabs followers={this.state.user.followers} following={this.state.user.following} posts={this.state.posts} />
             </div>
         )
     }

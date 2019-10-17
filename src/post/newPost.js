@@ -1,8 +1,6 @@
 import React , {Component} from 'react'
 import {Redirect} from 'react-router-dom'
-import read from '../core/Read'
 import isAuth from '../core/Auth'
-import {create} from './apiPost'
 class NewPost extends Component{
     constructor(){
         super();
@@ -12,7 +10,8 @@ class NewPost extends Component{
            photo:'',
            error:'',
            user:{},
-           loadinf:false
+           loadinf:false,
+           redirectToReferer:false
         }
     }
    
@@ -23,42 +22,36 @@ class NewPost extends Component{
         console.log(value)
         this.setState({[name]: value});       
     }
+    create=(userId,token,post)=>{
+        return fetch("http://localhost:8080/post/new/"+userId,{
+                method:"POST",
+                headers:{
+                    Accept:'application/json',
+                    Authorization:`Bearer ${token}`
+                },
+                body: post
+            })
+            .then(response =>{
+                return response.json();
+            })
+            .catch(err=>console.log(err))
+    }
     clickSubmit= (event)=>{
         event.preventDefault();
         this.setState({loading:true})
         const token = isAuth().token;
-        create(this.postData,token);
-
-    }
-    edit = (user,token)=>{
-       
-        const userId = this.props.match.params.userId
-        return fetch("http://localhost:8080/user/"+userId,{
-            method:"PUT",
-            headers:{
-                Accept:'application/json',
-                Authorization:`Bearer ${token}`
-            },
-            body: user
-        })
-        .then(response =>{
-            return response.json();
-        })
+        const userId = isAuth().user._id;
+        this.create(userId,token,this.postData)
         .then(data=>{
             if(data.error){
                 console.log(data.error)
-             this.setState({error:data.error})
-            }else{
-                   let jwt=JSON.parse(localStorage.getItem('jwt'));
-                   data.token = jwt.token;
-                    localStorage.setItem("jwt",JSON.stringify(data));
-                    this.setState({redirectToReferer:true});
-                }
-            })
-        .catch(err=>{
-            console.log(err)
-            this.setState({error:err});
-        })    
+                this.setState({loading:false,error:data.error.message});
+            }
+            else{
+                this.setState({loading:false,title:"",body:"",photo:"",redirectToReferer:true});
+            }
+        });
+
     }
     
     newPost= (title,body)=>(
@@ -83,12 +76,10 @@ class NewPost extends Component{
         this.setState({user:isAuth().user});
     }
     render(){
-        const userId = this.props.match.params.userId;
 
         if(this.state.redirectToReferer){
-            return <Redirect to={`/user/${this.props.match.params.userId}`} />
+            return <Redirect to={`/user/${isAuth().user._id}`} />
         }
-        // const photoUrl = userId?'http://localhost:8080/user/photo/'+userId+"?"+new Date().getTime(): defProfile;
         return(
             
             <div>
