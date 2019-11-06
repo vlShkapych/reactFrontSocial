@@ -2,7 +2,6 @@ import React,{Component} from 'react'
 import {list} from './Read'
 import {Link} from 'react-router-dom'
 import defProfile from '../../public/img/ricardo.png'
-import {getPostsBy} from '../post/getPosts'
 import isAuth from './Auth'
 class Users extends Component{
     constructor(){
@@ -10,7 +9,6 @@ class Users extends Component{
         this.state={
             users:[],
             page:null,
-            posts:[]
         }
     }
 
@@ -22,14 +20,7 @@ class Users extends Component{
                 this.setState({users:data});
             }
         });
-        getPostsBy(isAuth().user._id)
-        .then(data=>{
-            if(data.error){
-                console.log(data.error);
-            }else{
-                this.setState({posts:data});
-            }
-        })
+       
     }
    
     renderUsers=(users)=>(

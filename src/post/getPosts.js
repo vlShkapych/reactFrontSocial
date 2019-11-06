@@ -14,3 +14,19 @@ export const getPostsBy = (userId,token)=>{
         console.log(err);
     });
 }
+
+export const getAllPosts = (token) =>{
+    return fetch(`http://localhost:8080/posts`,{
+        method:'GET',
+        headers:{
+            Accept:'application/json',
+            'Content-Type':'application/json'
+        }
+    })
+    .then(response =>{
+        return response.json();
+    })
+    .catch(err=>{
+        console.log(err);
+    });;
+}
